@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Active Rigs",
+    "src_object": "ENV.Foundations_ActiveRigs",
+    "dst_object": "data.ActiveRig",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Drill Stem Tests",
+    "src_object": "ENV.Foundations_DrillStemTests",
+    "dst_object": "data.DrillStemTest",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Full Directional Survey",
+    "src_object": "ENV.Foundations_FullDirectionalSurvey",
+    "dst_object": "data.FullDirectionalSurvey",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Landtrac Leases",
+    "src_object": "ENV.Foundations_LandtracLeases",
+    "dst_object": "data.LandtracLease",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Landtrac Units",
+    "src_object": "ENV.Foundations_LandtracUnits",
+    "dst_object": "data.LandtracUnit",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Permits",
+    "src_object": "ENV.Foundations_Permits",
+    "dst_object": "data.Permit",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Production",
+    "src_object": "ENV.Foundations_Production",
+    "dst_object": "data.Production",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Rigs",
+    "src_object": "ENV.Foundations_Rigs",
+    "dst_object": "data.Rig",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  },
+  {
+    "name": "Active Wells",
+    "src_object": "ENV.Foundations_Wells",
+    "dst_object": "data.Well",
+    "batch_size": 100000,
+    "last_sync_value": "0001-01-01",
+    "retry_count": 5
+  }
+]

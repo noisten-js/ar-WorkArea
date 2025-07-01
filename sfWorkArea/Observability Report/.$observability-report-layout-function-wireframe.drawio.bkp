@@ -1,0 +1,61 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1">
+  <diagram name="Page-1" id="3CzmqbLCV3_CqGfgxyp6">
+    <mxGraphModel dx="2874" dy="1604" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-2" value="Vertical Container" style="swimlane;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fontFamily=Architects Daughter;" vertex="1" parent="1">
+          <mxGeometry x="-584" y="-84" width="1535" height="723" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-1" value="" style="rounded=0;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-2">
+          <mxGeometry x="17" y="44.5" width="543" height="636.5" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-14" value="" style="group;align=left;" vertex="1" connectable="0" parent="g64b8pfC4uwdNNqb4Vc2-2">
+          <mxGeometry x="45" y="150" width="295" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-16" value="325" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;strokeColor=default;sketch=1;curveFitting=1;jiggle=2;container=0;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-14">
+          <mxGeometry x="150" width="145" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-15" value="Department Count" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;container=0;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-14">
+          <mxGeometry width="148" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-45" value="" style="group" vertex="1" connectable="0" parent="g64b8pfC4uwdNNqb4Vc2-14">
+          <mxGeometry y="-45" width="295" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-12" value="User Count" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-45">
+          <mxGeometry width="145.02100840336135" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-13" value="325" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;strokeColor=default;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-45">
+          <mxGeometry x="149.97899159663865" width="145.02100840336135" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-46" value="" style="group" vertex="1" connectable="0" parent="g64b8pfC4uwdNNqb4Vc2-14">
+          <mxGeometry x="-1" y="-83" width="296" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-7" value="Report Count" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-46">
+          <mxGeometry width="145.51260504201682" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-9" value="325" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Architects Daughter;fontSize=15;strokeColor=default;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-46">
+          <mxGeometry x="150.48739495798318" width="145.51260504201682" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-19" value="Datasource List (DB only?)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontFamily=Architects Daughter;fontSize=14;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-2">
+          <mxGeometry x="45" y="239" width="233" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-20" value="Item 1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Architects Daughter;fontSize=14;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-19">
+          <mxGeometry y="30" width="233" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-21" value="Item 2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Architects Daughter;fontSize=14;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-19">
+          <mxGeometry y="60" width="233" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-22" value="Item 3" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Architects Daughter;fontSize=14;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-19">
+          <mxGeometry y="90" width="233" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-71" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-family: &amp;quot;Architects Daughter&amp;quot;; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Preamble (Desc, elevator pitch etc.)&lt;br&gt;Usage instructionsand remarks&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;font face=&quot;Architects Daughter&quot;&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Action Buttons, links etc&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot; face=&quot;Architects Daughter&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;verticalAlign=top;align=left;" vertex="1" parent="g64b8pfC4uwdNNqb4Vc2-2">
+          <mxGeometry x="598" y="44.5" width="925" height="638.5" as="geometry" />
+        </mxCell>
+        <mxCell id="g64b8pfC4uwdNNqb4Vc2-6" value="&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;ul style=&quot;margin-left:1.125in;direction:ltr;unicode-bidi:embed;&lt;br/&gt; margin-top:0in;margin-bottom:0in&quot; type=&quot;disc&quot;&gt;&lt;br&gt; &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;What Reports Are Being Used&lt;/span&gt;&lt;/li&gt;&lt;ul style=&quot;margin-left:.375in;direction:ltr;unicode-bidi:embed;&lt;br/&gt;  margin-top:0in;margin-bottom:0in&quot; type=&quot;square&quot;&gt;&lt;br&gt;  &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;Who is using the reports&lt;br&gt;      (names, and departments)&lt;/span&gt;&lt;/li&gt;&lt;br&gt;  &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;Where does the data for the&lt;br&gt;      report come from&lt;/span&gt;&lt;/li&gt;&lt;br&gt;  &lt;ul style=&quot;margin-left:.375in;direction:ltr;unicode-bidi:embed;&lt;br/&gt;   margin-top:0in;margin-bottom:0in&quot; type=&quot;disc&quot;&gt;&lt;br&gt;   &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;Direct Source&lt;/span&gt;&lt;/li&gt;&lt;br&gt;   &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;Original Source (Lineage)&lt;/span&gt;&lt;/li&gt;&lt;br&gt;  &lt;/ul&gt;&lt;br&gt;  &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;Where are the reports&lt;/span&gt;&lt;/li&gt;&lt;br&gt;  &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;What frequency&lt;/span&gt;&lt;/li&gt;&lt;br&gt;  &lt;li style=&quot;margin-top:0;margin-bottom:0;vertical-align:middle&quot;&gt;&lt;span style=&quot;font-family:Calibri;font-size:11.0pt&quot;&gt;What is the report for (What&lt;br&gt;      is the value of the report)&lt;/span&gt;&lt;/li&gt;&lt;br&gt; &lt;/ul&gt;&lt;br&gt;&lt;/ul&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-584" y="668" width="877" height="409" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

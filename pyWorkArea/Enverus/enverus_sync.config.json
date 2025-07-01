@@ -1,0 +1,8 @@
+{
+  "src_server": "bi.drillinginfo.com",
+  "src_database": "DrillingInfo_DIBI",
+  "src_login": "env_2866",
+  "src_secret": "YRwmC1u5XSDa",
+  "dst_server": "127.0.0.1",
+  "dst_database": "EnverusExtension"
+}

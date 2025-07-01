@@ -1,0 +1,53 @@
+WITH cteItemHierarchy AS (
+	SELECT
+		 ITEM_ID			= t0.ITEM_ID
+		,TITLE				= t0.TITLE
+		,ITEM_TYPE			= t1.DISPLAY_NAME
+		,PARENT_ID			= t0.PARENT_ID
+		,HPath				= convert(NVARCHAR(MAX), t0.TITLE)
+		,ACCESSED			= t0.ACCESSED
+	FROM
+		dbo.LIB_ITEMS t0
+
+		INNER JOIN dbo.LIB_ITEM_TYPES t1
+			ON t0.ITEM_TYPE = t1.TYPE_ID
+
+	WHERE 1=1
+		AND t0.PARENT_ID IS NULL
+
+	UNION ALL
+
+	SELECT
+		 ITEM_ID			= t0.ITEM_ID
+		,TITLE				= t0.TITLE
+		,ITEM_TYPE			= t1.DISPLAY_NAME
+		,PARENT_ID			= t0.PARENT_ID
+		,HPath				= concat(t2.HPath,'\', t0.TITLE)
+		,ACCESSED			= t0.ACCESSED
+	FROM
+		dbo.LIB_ITEMS t0
+
+		INNER JOIN dbo.LIB_ITEM_TYPES t1
+			ON t0.ITEM_TYPE = t1.TYPE_ID
+
+		INNER JOIN cteItemHierarchy t2
+			ON t0.PARENT_ID = t2.ITEM_ID
+	WHERE 1=1
+		AND t0.PARENT_ID IS NOT NULL
+)
+
+SELECT
+	 t0.ITEM_ID
+	,t0.TITLE
+	,t0.ITEM_TYPE
+	,t0.PARENT_ID
+	,t0.HPath
+	,t0.ACCESSED
+FROM
+	cteItemHierarchy t0
+WHERE 1=1
+	AND t0.ACCESSED <= dateadd(YYYY, -1, sysdatetime())
+	AND t0.ITEM_TYPE = 'dxp'
+	
+ORDER BY 
+	t0.TITLE

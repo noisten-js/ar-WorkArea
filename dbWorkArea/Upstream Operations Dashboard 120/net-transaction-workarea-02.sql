@@ -1,0 +1,907 @@
+------------------------------------------------------------------------------------
+-- working on determining the current source DV is using
+------------------------------------------------------------------------------------
+	
+SELECT 
+	 table_schema	= object_schema_name(t0.object_id)
+	,table_name		= object_name(t0.object_id)
+	,row_count		= format(t0.row_count, 'N0')
+FROM
+	sys.dm_db_partition_stats t0
+WHERE
+	t0.index_id < 2
+	AND objectpropertyex(t0.object_id,'BaseType') = 'U'
+ORDER BY
+	 t0.row_count DESC, table_schema
+	,table_name
+
+USE EDW
+SET QUOTED_IDENTIFIER ON
+SET ANSI_NULLS ON
+GO
+CREATE PROCEDURE Usp_Load_Enertia_Net_Transactions_Latest
+AS
+BEGIN
+	DROP TABLE IF EXISTS ##Pk_RowHash_Enertia_Net_Trasaction
+
+
+	DECLARE @BatchSize INT = 100000; -- Set the batch size    
+	DECLARE
+		@MinID	INT
+		,@MaxID INT;
+	DECLARE @Date DATETIME
+	BEGIN TRY
+		CREATE TABLE ##Pk_RowHash_Enertia_Net_Trasaction (
+			GlDtlTID	INT NOT NULL
+			,RowHash	VARBINARY(8000)
+			,CONSTRAINT PK_##Pk_RowHash_Enertia_Net_Trasaction PRIMARY KEY (GlDtlTID)
+		)
+		SET @Date = getdate()
+		-- Get the min and max values of OwnTxnTID    
+		SELECT
+			@MinID	= min(GlDtlTID)
+			,@MaxID = max(GlDtlTID)
+		FROM
+			EDW_Stage.Stage.Enertia_glMasDtl;
+
+		WHILE @MinID <= @MaxID
+		BEGIN
+			PRINT concat('Processing batch: ', @MinID, ' to ', @MinID + @BatchSize - 1);
+
+			INSERT INTO ##Pk_RowHash_Enertia_Net_Trasaction (
+				GlDtlTID
+				,RowHash
+			)
+			SELECT
+				GlDtlTID
+				,HashKey	= hashbytes(
+										'SHA2_256'
+										,concat(
+													concat(
+																Spend_Header
+																,'|'
+																,Activity
+																,'|'
+																,Activity_Detail
+																,'|'
+																,CapexOpex
+																,'|'
+																,Account_Type
+																,'|'
+																,Corporation_Code
+																,'|'
+																,Corporation_Name
+																,'|'
+																,Account_Code
+																,'|'
+																,Account_Name
+																,'|'
+																,Batch_Number
+																,'|'
+																,Transaction_Type
+																,'|'
+																,Transaction_Source_Code
+																,'|'
+																,Tranaction_User_Type
+																,'|'
+																,Transaction_Date
+																,'|'
+																,Transaction_Account_Date
+																,'|'
+																,Transaction_Service_Date
+																,'|'
+																,Operations_Phase
+																,'|'
+																,Billing_Category_Code
+																,'|'
+																,Billing_Category_Code_Orig
+																,'|'
+																,Billing_Category_Rollup
+																,'|'
+																,Billing_Category_Desc
+																,'|'
+																,Billing_Category_Code_Historical
+																,'|'
+																,Cost_Type_BC
+																,'|'
+																,Cost_Type_BC_Computed
+																,'|'
+																,Cost_Type_BC_Orig
+																,'|'
+																,Cost_Type_BC_Orig_Computed
+																,'|'
+																,Cost_Type_BC_Historical
+																,'|'
+																,Cost_Category_Rollup
+																,'|'
+																,Fixed_or_Variable
+																,'|'
+																,Cost_Type
+																,'|'
+																,Property_ID
+																,'|'
+																,Property_Code
+																,'|'
+																,Property_Name
+																,'|'
+																,Property_Type
+																,'|'
+																,Property_Code_Rollup
+																,'|'
+																,Property_Name_Rollup
+																,'|'
+																,Property_State_Rollup
+																,'|'
+																,Property_HPLP_Rollup
+																,'|'
+																,Property_Tier_Rollup
+																,'|'
+																,Property_Pad_Rollup
+																,'|'
+																,Property_Configuration_Rollup
+																,'|'
+																,Property_Field_Rollup
+																,'|'
+																,Bottom_Hole_Spud_Date
+																,'|'
+																,Surface_Spud_Date
+																,'|'
+																,Drilling_Pause_Date
+																,'|'
+																,Final_Rig_Release_Date
+																,'|'
+																,Resume_Drilling_Date
+																,'|'
+																,Frac_Start_Date
+																,'|'
+																,Frac_End_Date
+																,'|'
+																,Drillout_Start_Date
+																,'|'
+																,Drillout_End_Date
+																,'|'
+																,First_Sales_Date
+																,'|'
+																,Pad_Name
+																,'|'
+																,Pod_Name
+																,'|'
+																,Lateral_Length
+																,'|'
+																,Well_Count
+																,'|'
+																,Prospect
+																,'|'
+																,Wellview_State
+																,'|'
+																,Formation
+																,'|'
+																,Cost_Center
+																,'|'
+																,Well_ID
+																,'|'
+																,Well_Well_Name
+																,'|'
+																,Well_Pad_Name
+																,'|'
+																,Well_Pod_Name
+																,'|'
+																,Well_Prospect
+																,'|'
+																,Well_State
+																,'|'
+																,Well_County
+																,'|'
+																,Well_Formation
+																,'|'
+																,Well_Surface_Spud_Date
+																,'|'
+																,Well_Drilling_Pause_Date
+																,'|'
+																,Well_Resume_Drilling_Date
+																,'|'
+																,Well_Final_Rig_Release
+																,'|'
+																,Well_Frac_Start_Date
+																,'|'
+																,Well_Frac_End_Date
+																,'|'
+																,Well_Drillout_Start_Date
+																,'|'
+																,Well_Drillout_End_Date
+																,'|'
+																,Well_First_Sales_Date
+																,'|'
+																,Well_Total_Measured_Depth
+																,'|'
+																,Well_Lateral_Length_Actual
+																,'|'
+																,Well_Lateral_Length_Planned
+																,'|'
+																,Well_Lateral_Length_Completable
+																,'|'
+																,Well_Lateral_Length_Completed
+																,'|'
+																,Well_Operator
+																,'|'
+																,Well_Current_Operations_Status
+																,'|'
+																,Well_Configuration
+																,'|'
+																,Well_Cost_Center
+																,'|'
+																,Well_Pad_Lateral_Length
+																,'|'
+																,Well_Stage_Count
+																,'|'
+																,Pad_Stage_Count
+																,'|'
+																,Well_Proppant
+																,'|'
+																,Well_Proppant_Load
+																,'|'
+																,Well_Recover_Load
+																,'|'
+																,[Net Ownership]
+																,'|'
+																,AFE_Code
+																,'|'
+																,AFE_Name
+																,'|'
+																,AFE_Category_Code
+																,'|'
+																,[Net Corporate Interest]
+																,'|'
+																,[Entered Net Ownership]
+																,'|'
+																,Volume
+																,'|'
+																,Value
+																,'|'
+															)
+													,concat(
+																Value_Net
+																,'|'
+																,Value_Gross
+																,'|'
+																,Invoice_Number
+																,'|'
+																,Description
+																,'|'
+																,Vendor_Code
+																,'|'
+																,Vendor_Name
+																,'|'
+																,Purchaser_Code
+																,'|'
+																,Purchaser_Name
+																,'|'
+																,Owner_Code
+																,'|'
+																,Owner_Name
+																,'|'
+																,HdrTypeName
+																,'|'
+																,Remittance_Code
+																,'|'
+																,Remittance_Name
+																,'|'
+																,DDA_Code
+																,'|'
+																,DDA_Name
+																,'|'
+																,IC_Code
+																,'|'
+																,IC_Name
+																,'|'
+																,Check_Department_Number
+																,'|'
+																,Distribution
+																,'|'
+																,Process_TID_DTL
+																,'|'
+																,Batch_AR
+																,'|'
+																,Batch_Revenue
+																,'|'
+																,Batch_MMS
+																,'|'
+																,Batch_MC
+																,'|'
+																,Batch_Other
+																,'|'
+																,OrigTxnRowTID
+																,'|'
+																,DtlBatchTID
+																,'|'
+																,DtlCorpHID
+																,'|'
+																,DtlAcctHID
+																,'|'
+																,DtlVendorHID
+																,'|'
+																,DtlPurchaserHID
+																,'|'
+																,DtlOwnerHID
+																,'|'
+																,DtlPropHID
+																,'|'
+																,DtlAfeHID
+																,'|'
+																,DtlRemitterHID
+																,'|'
+																,DtlDdaOwnerHID
+																,'|'
+																,DtlICCorpHID
+																,'|'
+																,Type1
+																,'|'
+																,Category1
+																,'|'
+																,Billing_Code1
+																,'|'
+																,Phase1
+																,'|'
+																,Vendor1
+																,'|'
+																,New_Billing_Code1
+																,'|'
+																,Active1
+																,'|'
+																,Type2
+																,'|'
+																,Category2
+																,'|'
+																,Billing_Code2
+																,'|'
+																,Phase2
+																,'|'
+																,Vendor2
+																,'|'
+																,New_Billing_Code2
+																,'|'
+																,Active2
+																,'|'
+																,Type5
+																,'|'
+																,Category5
+																,'|'
+																,Billing_Code5
+																,'|'
+																,Phase5
+																,'|'
+																,Vendor5
+																,'|'
+																,New_Billing_Code5
+																,'|'
+																,Active5
+																,'|'
+																,Type3
+																,'|'
+																,Category3
+																,'|'
+																,Billing_Code3
+																,'|'
+																,Phase3
+																,'|'
+																,Vendor3
+																,'|'
+																,New_Billing_Code3
+																,'|'
+																,Active3
+																,'|'
+																,Type4
+																,'|'
+																,Category4
+																,'|'
+																,Billing_Code4
+																,'|'
+																,Phase4
+																,'|'
+																,Vendor4
+																,'|'
+																,New_Billing_Code4
+																,'|'
+																,Active4
+																,'|'
+																,Type6
+																,'|'
+																,Category6
+																,'|'
+																,Billing_Code6
+																,'|'
+																,Phase6
+																,'|'
+																,Vendor6
+																,'|'
+																,New_Billing_Code6
+																,'|'
+																,Active6
+																,'|'
+																,Cost_Category_Rollup_Pass_2
+																,'|'
+																,Billing_Category_Rollup_Pass_2
+																,'|'
+																,Billing_Category_Rollup_Pass_1
+																,'|'
+																,Cost_Category_Rollup_Pass_1
+																,'|'
+																,ATR_Type
+																,'|'
+																,ATR_Code
+																,'|'
+																,Product_Code
+																,'|'
+																,Product_Description
+																,'|'
+																,Product_Component
+																,'|'
+																,Product_Component_Desc
+																,'|'
+																,UOM_COde
+																,'|'
+																,Billing_Category_Code_PreAllocation_Gross
+																,'|'
+																,Billing_Category_Code_PreAllocation
+																,'|'
+																,Pad_Name_PreAllocation
+																,'|'
+																,Mapped_Billing_Category
+															)
+												)
+									)
+			FROM
+				Mart.View_Enertia_Net_Transaction_Test
+			WHERE
+				GlDtlTID BETWEEN @MinID AND @MinID + @BatchSize - 1;
+
+			-- Move to the next batch    
+			SET @MinID = @MinID + @BatchSize;
+		END;
+		PRINT 'Batch processing completed!';
+		SELECT
+			@MinID	= 0		-- Start of batch range    
+			,@MaxID = 0;	-- End of batch range    
+
+		-- Get the minimum and maximum IDs    
+		SELECT
+			@MinID	= min(GlDtlTID)
+			,@MaxID = max(GlDtlTID)
+		FROM
+			##Pk_RowHash_Enertia_Net_Trasaction;
+
+		-- Loop through the data in batches    
+		WHILE @MinID <= @MaxID
+		BEGIN
+			BEGIN TRANSACTION;
+
+			PRINT concat('Processing Batch: ', @MinID, ' to ', @MinID + @BatchSize - 1);
+
+			INSERT INTO Mart.RPT_Enertia_Net_Transaction (
+				Spend_Header
+				,Activity
+				,Activity_Detail
+				,CapexOpex
+				,Account_Type
+				,Corporation_Code
+				,Corporation_Name
+				,Account_Code
+				,Account_Name
+				,Batch_Number
+				,Transaction_Type
+				,Transaction_Source_Code
+				,Tranaction_User_Type
+				,Transaction_Date
+				,Transaction_Account_Date
+				,Transaction_Service_Date
+				,Operations_Phase
+				,Billing_Category_Code
+				,Billing_Category_Code_Orig
+				,Billing_Category_Rollup
+				,Billing_Category_Desc
+				,Billing_Category_Code_Historical
+				,Cost_Type_BC
+				,Cost_Type_BC_Computed
+				,Cost_Type_BC_Orig
+				,Cost_Type_BC_Orig_Computed
+				,Cost_Type_BC_Historical
+				,Cost_Category_Rollup
+				,Fixed_or_Variable
+				,Cost_Type
+				,Property_ID
+				,Property_Code
+				,Property_Name
+				,Property_Type
+				,Property_Code_Rollup
+				,Property_Name_Rollup
+				,Property_State_Rollup
+				,Property_HPLP_Rollup
+				,Property_Tier_Rollup
+				,Property_Pad_Rollup
+				,Property_Configuration_Rollup
+				,Property_Field_Rollup
+				,Bottom_Hole_Spud_Date
+				,Surface_Spud_Date
+				,Drilling_Pause_Date
+				,Final_Rig_Release_Date
+				,Resume_Drilling_Date
+				,Frac_Start_Date
+				,Frac_End_Date
+				,Drillout_Start_Date
+				,Drillout_End_Date
+				,First_Sales_Date
+				,Pad_Name
+				,Pod_Name
+				,Lateral_Length
+				,Well_Count
+				,Prospect
+				,Wellview_State
+				,Formation
+				,Cost_Center
+				,Well_ID
+				,Well_Well_Name
+				,Well_Pad_Name
+				,Well_Pod_Name
+				,Well_Prospect
+				,Well_State
+				,Well_County
+				,Well_Formation
+				,Well_Surface_Spud_Date
+				,Well_Drilling_Pause_Date
+				,Well_Resume_Drilling_Date
+				,Well_Final_Rig_Release
+				,Well_Frac_Start_Date
+				,Well_Frac_End_Date
+				,Well_Drillout_Start_Date
+				,Well_Drillout_End_Date
+				,Well_First_Sales_Date
+				,Well_Total_Measured_Depth
+				,Well_Lateral_Length_Actual
+				,Well_Lateral_Length_Planned
+				,Well_Lateral_Length_Completable
+				,Well_Lateral_Length_Completed
+				,Well_Operator
+				,Well_Current_Operations_Status
+				,Well_Configuration
+				,Well_Cost_Center
+				,Well_Pad_Lateral_Length
+				,Well_Stage_Count
+				,Pad_Stage_Count
+				,Well_Proppant
+				,Well_Proppant_Load
+				,Well_Recover_Load
+				,[Net Ownership]
+				,AFE_Code
+				,AFE_Name
+				,AFE_Category_Code
+				,[Net Corporate Interest]
+				,[Entered Net Ownership]
+				,Volume
+				,Value
+				,Value_Net
+				,Value_Gross
+				,Invoice_Number
+				,Description
+				,Vendor_Code
+				,Vendor_Name
+				,ETL_Load_Date
+				,Purchaser_Code
+				,Purchaser_Name
+				,Owner_Code
+				,Owner_Name
+				,HdrTypeName
+				,Remittance_Code
+				,Remittance_Name
+				,DDA_Code
+				,DDA_Name
+				,IC_Code
+				,IC_Name
+				,Check_Department_Number
+				,Distribution
+				,Process_TID_DTL
+				,Batch_AR
+				,Batch_Revenue
+				,Batch_MMS
+				,Batch_MC
+				,Batch_Other
+				,OrigTxnRowTID
+				,GlDtlTID
+				,DtlBatchTID
+				,DtlCorpHID
+				,DtlAcctHID
+				,DtlVendorHID
+				,DtlPurchaserHID
+				,DtlOwnerHID
+				,DtlPropHID
+				,DtlAfeHID
+				,DtlRemitterHID
+				,DtlDdaOwnerHID
+				,DtlICCorpHID
+				,Type1
+				,Category1
+				,Billing_Code1
+				,Phase1
+				,Vendor1
+				,New_Billing_Code1
+				,Active1
+				,Type2
+				,Category2
+				,Billing_Code2
+				,Phase2
+				,Vendor2
+				,New_Billing_Code2
+				,Active2
+				,Type5
+				,Category5
+				,Billing_Code5
+				,Phase5
+				,Vendor5
+				,New_Billing_Code5
+				,Active5
+				,Type3
+				,Category3
+				,Billing_Code3
+				,Phase3
+				,Vendor3
+				,New_Billing_Code3
+				,Active3
+				,Type4
+				,Category4
+				,Billing_Code4
+				,Phase4
+				,Vendor4
+				,New_Billing_Code4
+				,Active4
+				,Type6
+				,Category6
+				,Billing_Code6
+				,Phase6
+				,Vendor6
+				,New_Billing_Code6
+				,Active6
+				,Cost_Category_Rollup_Pass_2
+				,Billing_Category_Rollup_Pass_2
+				,Billing_Category_Rollup_Pass_1
+				,Cost_Category_Rollup_Pass_1
+				,ATR_Type
+				,ATR_Code
+				,Product_Code
+				,Product_Description
+				,Product_Component
+				,Product_Component_Desc
+				,UOM_COde
+				,Billing_Category_Code_PreAllocation_Gross
+				,Billing_Category_Code_PreAllocation
+				,Pad_Name_PreAllocation
+				,Mapped_Billing_Category
+				,RowHash
+				,Dtl_ETL_Load_Date
+			)
+			SELECT
+				vw.Spend_Header
+				,vw.Activity
+				,vw.Activity_Detail
+				,vw.CapexOpex
+				,vw.Account_Type
+				,vw.Corporation_Code
+				,vw.Corporation_Name
+				,vw.Account_Code
+				,vw.Account_Name
+				,vw.Batch_Number
+				,vw.Transaction_Type
+				,vw.Transaction_Source_Code
+				,vw.Tranaction_User_Type
+				,vw.Transaction_Date
+				,vw.Transaction_Account_Date
+				,vw.Transaction_Service_Date
+				,vw.Operations_Phase
+				,vw.Billing_Category_Code
+				,vw.Billing_Category_Code_Orig
+				,vw.Billing_Category_Rollup
+				,vw.Billing_Category_Desc
+				,vw.Billing_Category_Code_Historical
+				,vw.Cost_Type_BC
+				,vw.Cost_Type_BC_Computed
+				,vw.Cost_Type_BC_Orig
+				,vw.Cost_Type_BC_Orig_Computed
+				,vw.Cost_Type_BC_Historical
+				,vw.Cost_Category_Rollup
+				,vw.Fixed_or_Variable
+				,vw.Cost_Type
+				,vw.Property_ID
+				,vw.Property_Code
+				,vw.Property_Name
+				,vw.Property_Type
+				,vw.Property_Code_Rollup
+				,vw.Property_Name_Rollup
+				,vw.Property_State_Rollup
+				,vw.Property_HPLP_Rollup
+				,vw.Property_Tier_Rollup
+				,vw.Property_Pad_Rollup
+				,vw.Property_Configuration_Rollup
+				,vw.Property_Field_Rollup
+				,vw.Bottom_Hole_Spud_Date
+				,vw.Surface_Spud_Date
+				,vw.Drilling_Pause_Date
+				,vw.Final_Rig_Release_Date
+				,vw.Resume_Drilling_Date
+				,vw.Frac_Start_Date
+				,vw.Frac_End_Date
+				,vw.Drillout_Start_Date
+				,vw.Drillout_End_Date
+				,vw.First_Sales_Date
+				,vw.Pad_Name
+				,vw.Pod_Name
+				,vw.Lateral_Length
+				,vw.Well_Count
+				,vw.Prospect
+				,vw.Wellview_State
+				,vw.Formation
+				,vw.Cost_Center
+				,vw.Well_ID
+				,vw.Well_Well_Name
+				,vw.Well_Pad_Name
+				,vw.Well_Pod_Name
+				,vw.Well_Prospect
+				,vw.Well_State
+				,vw.Well_County
+				,vw.Well_Formation
+				,vw.Well_Surface_Spud_Date
+				,vw.Well_Drilling_Pause_Date
+				,vw.Well_Resume_Drilling_Date
+				,vw.Well_Final_Rig_Release
+				,vw.Well_Frac_Start_Date
+				,vw.Well_Frac_End_Date
+				,vw.Well_Drillout_Start_Date
+				,vw.Well_Drillout_End_Date
+				,vw.Well_First_Sales_Date
+				,vw.Well_Total_Measured_Depth
+				,vw.Well_Lateral_Length_Actual
+				,vw.Well_Lateral_Length_Planned
+				,vw.Well_Lateral_Length_Completable
+				,vw.Well_Lateral_Length_Completed
+				,vw.Well_Operator
+				,vw.Well_Current_Operations_Status
+				,vw.Well_Configuration
+				,vw.Well_Cost_Center
+				,vw.Well_Pad_Lateral_Length
+				,vw.Well_Stage_Count
+				,vw.Pad_Stage_Count
+				,vw.Well_Proppant
+				,vw.Well_Proppant_Load
+				,vw.Well_Recover_Load
+				,vw.[Net Ownership]
+				,vw.AFE_Code
+				,vw.AFE_Name
+				,vw.AFE_Category_Code
+				,vw.[Net Corporate Interest]
+				,vw.[Entered Net Ownership]
+				,vw.Volume
+				,vw.Value
+				,vw.Value_Net
+				,vw.Value_Gross
+				,vw.Invoice_Number
+				,vw.Description
+				,vw.Vendor_Code
+				,vw.Vendor_Name
+				,@Date
+				,vw.Purchaser_Code
+				,vw.Purchaser_Name
+				,vw.Owner_Code
+				,vw.Owner_Name
+				,vw.HdrTypeName
+				,vw.Remittance_Code
+				,vw.Remittance_Name
+				,vw.DDA_Code
+				,vw.DDA_Name
+				,vw.IC_Code
+				,vw.IC_Name
+				,vw.Check_Department_Number
+				,vw.Distribution
+				,vw.Process_TID_DTL
+				,vw.Batch_AR
+				,vw.Batch_Revenue
+				,vw.Batch_MMS
+				,vw.Batch_MC
+				,vw.Batch_Other
+				,vw.OrigTxnRowTID
+				,vw.GlDtlTID
+				,vw.DtlBatchTID
+				,vw.DtlCorpHID
+				,vw.DtlAcctHID
+				,vw.DtlVendorHID
+				,vw.DtlPurchaserHID
+				,vw.DtlOwnerHID
+				,vw.DtlPropHID
+				,vw.DtlAfeHID
+				,vw.DtlRemitterHID
+				,vw.DtlDdaOwnerHID
+				,vw.DtlICCorpHID
+				,vw.Type1
+				,vw.Category1
+				,vw.Billing_Code1
+				,vw.Phase1
+				,vw.Vendor1
+				,vw.New_Billing_Code1
+				,vw.Active1
+				,vw.Type2
+				,vw.Category2
+				,vw.Billing_Code2
+				,vw.Phase2
+				,vw.Vendor2
+				,vw.New_Billing_Code2
+				,vw.Active2
+				,vw.Type5
+				,vw.Category5
+				,vw.Billing_Code5
+				,vw.Phase5
+				,vw.Vendor5
+				,vw.New_Billing_Code5
+				,vw.Active5
+				,vw.Type3
+				,vw.Category3
+				,vw.Billing_Code3
+				,vw.Phase3
+				,vw.Vendor3
+				,vw.New_Billing_Code3
+				,vw.Active3
+				,vw.Type4
+				,vw.Category4
+				,vw.Billing_Code4
+				,vw.Phase4
+				,vw.Vendor4
+				,vw.New_Billing_Code4
+				,vw.Active4
+				,vw.Type6
+				,vw.Category6
+				,vw.Billing_Code6
+				,vw.Phase6
+				,vw.Vendor6
+				,vw.New_Billing_Code6
+				,vw.Active6
+				,vw.Cost_Category_Rollup_Pass_2
+				,vw.Billing_Category_Rollup_Pass_2
+				,vw.Billing_Category_Rollup_Pass_1
+				,vw.Cost_Category_Rollup_Pass_1
+				,vw.ATR_Type
+				,vw.ATR_Code
+				,vw.Product_Code
+				,vw.Product_Description
+				,vw.Product_Component
+				,vw.Product_Component_Desc
+				,vw.UOM_COde
+				,vw.Billing_Category_Code_PreAllocation_Gross
+				,vw.Billing_Category_Code_PreAllocation
+				,vw.Pad_Name_PreAllocation
+				,vw.Mapped_Billing_Category
+				,t.RowHash
+				,vw.Dtl_ETL_Load_Date
+			FROM
+				Mart.View_Enertia_Net_Transaction_Test			vw
+				INNER JOIN ##Pk_RowHash_Enertia_Net_Trasaction t
+					ON vw.GlDtlTID = t.GlDtlTID
+
+				LEFT JOIN Mart.RPT_Enertia_Net_Transaction	tgt
+					ON t.GlDtlTID = tgt.GlDtlTID
+			WHERE
+				vw.GlDtlTID BETWEEN @MinID AND @MinID + @BatchSize - 1
+				AND tgt.GlDtlTID IS NULL;
+
+			COMMIT TRANSACTION;
+			-- Move to the next batch    
+			SET @MinID = @MinID + @BatchSize;
+		END
+		-- Commit transaction if everything is successful    
+		TRUNCATE TABLE ##Pk_RowHash_Enertia_Net_Trasaction
+	--COMMIT TRANSACTION    
+	END TRY
+	BEGIN CATCH
+		-- Rollback transaction in case of error    
+		ROLLBACK TRANSACTION
+		PRINT 'Error Occurred';
+		PRINT error_message();
+	END CATCH;
+END;
+
+
+GO

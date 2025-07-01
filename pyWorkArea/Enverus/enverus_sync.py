@@ -6,8 +6,8 @@ import datetime
 def do_the_thing(i=100000):
     srcSvr = 'biconnect.enverus.com'
     srcDb = 'DrillingInfo_DIBI'
-    srcUsr = 'env_2866'
-    srcPw = 'YRwmC1u5XSDa'
+    srcUsr = '*****'
+    srcPw = '*****'
 
     srcCn = db_connect(srcSvr, srcDb, srcUsr, srcPw)
     srcCr = srcCn.cursor()

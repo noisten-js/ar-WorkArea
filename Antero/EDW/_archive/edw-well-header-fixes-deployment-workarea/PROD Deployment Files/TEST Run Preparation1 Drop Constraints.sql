@@ -1,0 +1,363 @@
+---1.  Drop contraints and delete data.Delete DIM, SAT ALIAS and MAP  
+---2.  Modify Master_Etl.Master_Well_Header
+---3.  Modify Master_Etl.Dimensional_Well_Header
+---4.  Modify Rules in Rules.Rule but also "Change Weights" and "Combined Rule" file.
+---5.  Modify Master.Dim_Well_Header_Dedup_1_Base
+---6.  SET Truncate = 1 in Master_Etl.Process
+---7.  Comment out post processing in [Master_Etl].[Process_Well_Header]
+---8.  Modify Translate views to pull only ANNA 3H
+---9.  Comment out Merrick Production Processing
+---10. Analysis
+
+------------------------------------------------------------------------
+---                       SET TO
+---Enertia            4       8
+---Petra			  1       2
+---Aries			  2       3
+---Merrick			  6       6
+---SigmaFlow		  3       4 
+---FracSchedule	     17       7
+---WellView		      5       5
+---GIS			     23       1
+---Aries Planning	 24       9
+
+USE [EDW]
+GO
+
+/****** Object:  Index [IX_Etl_Source_Process_Order_01]    Script Date: 10/11/2024 4:40:18 PM ******/
+DROP INDEX [IX_Etl_Source_Process_Order_01] ON [Etl].[Source_Process_Order]
+GO
+
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 23
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 4
+---UPDATE Etl.Source_Process_Order SET Source_Order = 1 WHERE Source_ID = 23
+---UPDATE Etl.Source_Process_Order SET Source_Order = 8 WHERE Source_ID = 4
+
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 4 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 1 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 2 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 6 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 3 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 17
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 5 
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 23
+---SELECT * FROM Etl.Source_Process_Order WHERE Source_ID = 24
+
+
+UPDATE Etl.Source_Process_Order SET Source_Order = 8  WHERE Source_ID = 4 
+UPDATE Etl.Source_Process_Order SET Source_Order = 2  WHERE Source_ID = 1 
+UPDATE Etl.Source_Process_Order SET Source_Order = 3  WHERE Source_ID = 2 
+UPDATE Etl.Source_Process_Order SET Source_Order = 6  WHERE Source_ID = 6 
+UPDATE Etl.Source_Process_Order SET Source_Order = 4  WHERE Source_ID = 3 
+UPDATE Etl.Source_Process_Order SET Source_Order = 7  WHERE Source_ID = 17
+UPDATE Etl.Source_Process_Order SET Source_Order = 5  WHERE Source_ID = 5 
+UPDATE Etl.Source_Process_Order SET Source_Order = 1  WHERE Source_ID = 23
+UPDATE Etl.Source_Process_Order SET Source_Order = 9  WHERE Source_ID = 24
+
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Etl_Source_Process_Order_01] ON [Etl].[Source_Process_Order]
+(
+	[Source_Order] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+
+
+------------------------------------------------------------------------
+USE [EDW]
+GO
+
+DROP INDEX [IX_Master_Etl_Source_Process_Order_01] ON [Master_Etl].[Source_Process_Order]
+GO
+---                 SET TO
+---Petra	       1    2
+---Aries	       2    3
+---SigmaFlow	   3    4
+---Enertia	       4    8
+---WellView	       5    5
+---Merrick	       6    6
+---FracSchedule   17    7
+---GIS	          23    1
+---Aries Planning 24    9
+
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 1 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 2 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 3 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 4 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 5 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 6 
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 17
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 23
+---SELECT * FROM Master_Etl.Source_Process_Order WHERE Source_ID = 24
+
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 2 WHERE Source_ID = 1 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 3 WHERE Source_ID = 2 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 4 WHERE Source_ID = 3 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 8 WHERE Source_ID = 4 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 5 WHERE Source_ID = 5 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 6 WHERE Source_ID = 6 
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 7 WHERE Source_ID = 17
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 1 WHERE Source_ID = 23
+UPDATE Master_Etl.Source_Process_Order SET Source_Order = 9 WHERE Source_ID = 24
+
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Master_Etl_Source_Process_Order_01] ON [Master_Etl].[Source_Process_Order]
+(
+	[Source_Order] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+ALTER TABLE [Aries].[Dim_Well_Header]                  DROP CONSTRAINT [FK_Dim_Well_Header_Dim_Aries_Pad_Header_UID_Dim_Pad_Header]
+ALTER TABLE [Aries].[Dim_Well_Header]                  DROP CONSTRAINT [FK_Dim_Well_Header_Dim_Aries_Unit_Header_UID_Dim_Unit_Header]
+ALTER TABLE [Aries].[Fact_Well_Header]                 DROP CONSTRAINT [FK_Fact_Well_Header_Aries_Dim_Well_Header_UID_Dim_Well_Header]
+
+ALTER TABLE [Enertia].[Dim_Well_Header]                DROP CONSTRAINT [FK_Dim_Well_Header_Enertia_Dim_Pad_Header_UID_Dim_Pad_Header]
+ALTER TABLE [Enertia].[Dim_Well_Header]                DROP CONSTRAINT [FK_Dim_Well_Header_Enertia_Dim_Unit_Header_UID_Dim_Unit_Header]
+ALTER TABLE [Enertia].[Fact_Well_Header]               DROP CONSTRAINT [FK_Fact_Well_Header_Enertia_Dim_Well_Header_UID_Dim_Well_Header]
+
+ALTER TABLE [Merrick].[Dim_Well_Header]                DROP CONSTRAINT [FK_Dim_Well_Header_Merrick_Dim_Pad_Header_UID_Dim_Pad_Header]
+ALTER TABLE [Merrick].[Dim_Daily_Well_Production]      DROP CONSTRAINT [FK_Dim_Daily_Well_Production_Dim_Well_Header_Merrick_Dim_Well_Header_UID]
+
+ALTER TABLE [SigmaFlow].[Dim_Well_Header]              DROP CONSTRAINT [FK_Dim_Well_Header_Dim_SigmaFLow_Pad_Header_UID_Dim_Pad_Header]
+ALTER TABLE [SigmaFlow].[Dim_Well_Header]              DROP CONSTRAINT [FK_Dim_Well_Header_Dim_SigmaFlow_Unit_Header_UID_Dim_Unit_Header]
+ALTER TABLE [SigmaFlow].[Fact_Well_Header]             DROP CONSTRAINT [FK_Fact_Well_Header_SigmaFlow_Dim_Well_Header_UID_Dim_Well_Header]
+ALTER TABLE [SigmaFlow].[Fact_Well_Header]             DROP CONSTRAINT [FK_Fact_Well_Header_Dim_SigmaFlow_Well_Header_UID_Dim_Well_Header]
+
+---does not exist
+---ALTER TABLE [SigmaFlow].[Fact_Well_Header]             DROP CONSTRAINT [FK_Fact_Well_Header_SigmaFlow_Dim_Well_Header_UID_Dim_Well_Header]
+---does not exist
+---ALTER TABLE [SigmaFlow].[Fact_Well_Header]             DROP CONSTRAINT [FK_Fact_Well_Header_Dim_SigmaFlow_Well_Header_UID_Dim_Well_Header]
+
+ALTER TABLE [WellView].[Dim_Well_Header]               DROP CONSTRAINT [FK__Dim_Well___WellV__6BB15C6C]
+ALTER TABLE [WellView].[Fact_Well_Header]              DROP CONSTRAINT [FK_Fact_Well_Header_WellView_Dim_Well_Header_UID_Dim_Well_Header]
+
+ALTER TABLE [Master].[Sat_Well_Header_Alias_Well_Name] DROP CONSTRAINT [FK_Sat_Well_Header_Alias_Well_Name_Hub_Well_Header_Hub_Well_Header_UID]
+
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_SigmaFlow_Dim_Well_Header_UID_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_Aries_Dim_Well_Header_UID_Aries_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_Petra_Dim_Well_Header_UID_Petra_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_Enertia_Dim_Well_Header_UID_Enertia_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_FracSchedule_Dim_Well_Header_UID_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_Master_Hub_Well_Header_UID]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_Merrick_Dim_Well_Header_UID_Dim_Well_Header]
+ALTER TABLE [Master_Etl].[Map_Well_Header]             DROP CONSTRAINT [FK_Map_Well_Header_WellView_Dim_Well_Header_UID_Dim_Well_Header]
+
+ALTER TABLE [Aries_Planning].[Fact_Well_Header]        DROP CONSTRAINT [FK_Fact_Well_Header_Aries_Planning_Dim_Well_Header_UID_Dim_Well_Header]
+ALTER TABLE [FracSchedule].[Fact_Well_Header]          DROP CONSTRAINT [FK_Fact_Well_Header_FracSchedule_Dim_Well_Header_UID_Dim_Well_Header]
+
+DELETE FROM          [Aries].[Dim_Well_Header] 
+DELETE FROM       [Wellview].[Dim_Well_Header] 
+DELETE FROM        [Merrick].[Dim_Well_Header] 
+DELETE FROM          [Petra].[Dim_Well_Header] 
+DELETE FROM        [Enertia].[Dim_Well_Header] 
+DELETE FROM      [SigmaFlow].[Dim_Well_Header] 
+DELETE FROM            [GIS].[Dim_Well_Header] 
+DELETE FROM   [FracSchedule].[Dim_Well_Header] 
+DELETE FROM [Aries_Planning].[Dim_Well_Header] 
+
+DELETE FROM master.hub_well_header  
+DELETE FROM master.sat_well_header                 
+DELETE FROM master.sat_well_header_Aries           
+DELETE FROM master.sat_well_header_Wellview        
+DELETE FROM master.sat_well_header_Merrick         
+DELETE FROM master.sat_well_header_Petra           
+DELETE FROM master.sat_well_header_Enertia         
+DELETE FROM master.sat_well_header_SigmaFlow       
+DELETE FROM master.sat_well_header_GIS             
+DELETE FROM master.sat_well_header_FracSchedule    
+DELETE FROM master.sat_well_header_Aries_Planning  
+
+DELETE FROM master_etl.map_well_header         
+DELETE FROM master_etl.map_well_header_Aries           
+DELETE FROM master_etl.map_well_header_Wellview        
+DELETE FROM master_etl.map_well_header_Merrick         
+DELETE FROM master_etl.map_well_header_Petra           
+DELETE FROM master_etl.map_well_header_Enertia         
+DELETE FROM master_etl.map_well_header_SigmaFlow       
+DELETE FROM master_etl.map_well_header_GIS             
+DELETE FROM master_etl.map_well_header_FracSchedule    
+DELETE FROM master_etl.map_well_header_Aries_Planning  
+
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Aries]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Wellview]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Merrick]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Petra]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Enertia]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_SigmaFlow]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_GIS]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_FracSchedule]
+DELETE FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Aries_Planning]
+
+---
+---
+---
+---
+---
+---
+---
+---
+---SELECT * FROM master.hub_well_header  
+---SELECT * FROM master.sat_well_header                 
+---SELECT * FROM master.sat_well_header_Aries           
+---SELECT * FROM master.sat_well_header_Wellview        
+---SELECT * FROM master.sat_well_header_Merrick         
+---SELECT * FROM master.sat_well_header_Petra           
+---SELECT * FROM master.sat_well_header_Enertia         
+---SELECT * FROM master.sat_well_header_SigmaFlow       
+---SELECT * FROM master.sat_well_header_GIS             
+---SELECT * FROM master.sat_well_header_FracSchedule    
+---SELECT * FROM master.sat_well_header_Aries_Planning  
+---
+---SELECT * FROM master_etl.map_well_header         
+---SELECT * FROM master_etl.map_well_header_Aries           
+---SELECT * FROM master_etl.map_well_header_Wellview        
+---SELECT * FROM master_etl.map_well_header_Merrick         
+---SELECT * FROM master_etl.map_well_header_Petra           
+---SELECT * FROM master_etl.map_well_header_Enertia         
+---SELECT * FROM master_etl.map_well_header_SigmaFlow       
+---SELECT * FROM master_etl.map_well_header_GIS             
+---SELECT * FROM master_etl.map_well_header_FracSchedule    
+---SELECT * FROM master_etl.map_well_header_Aries_Planning  
+---
+---SELECT * FROM          [Aries].[Dim_Well_Header] 
+---SELECT * FROM       [Wellview].[Dim_Well_Header] 
+---SELECT * FROM        [Merrick].[Dim_Well_Header] 
+---SELECT * FROM          [Petra].[Dim_Well_Header] 
+---SELECT * FROM        [Enertia].[Dim_Well_Header] 
+---SELECT * FROM      [SigmaFlow].[Dim_Well_Header] 
+---SELECT * FROM            [GIS].[Dim_Well_Header]  --WHERE Well_Name_Antero_Standard IN('ALICE UNIT 1H') 
+---SELECT * FROM   [FracSchedule].[Dim_Well_Header] 
+---SELECT * FROM [Aries_Planning].[Dim_Well_Header] 
+---
+---
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Aries]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Wellview]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Merrick]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Petra]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Enertia]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_SigmaFlow]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_GIS]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_FracSchedule]
+--   SELECT * FROM [EDW].[Rules_Alias].[Master_Sat_Well_Header_Aries_Planning]
+
+--ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Type_ID_Rules_Rule_Type]
+--ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Entity]
+--ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Unmap_Rules_Rule_Alias]
+--ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Map_Rules_Rule_Alias]
+
+---
+---USE [EDW]
+---GO
+---
+------1
+---ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Type_ID_Rules_Rule_Type]
+---GO
+---
+---ALTER TABLE [Rules].[Rule]  WITH NOCHECK ADD  CONSTRAINT [FK_Rules_Rule_Rule_Type_ID_Rules_Rule_Type] FOREIGN KEY([Rule_Type_ID])
+---REFERENCES [Rules].[Rule_Type] ([Rule_Type_ID])
+---GO
+---
+---ALTER TABLE [Rules].[Rule] CHECK CONSTRAINT [FK_Rules_Rule_Rule_Type_ID_Rules_Rule_Type]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+------2
+---ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Entity]
+---GO
+---
+---ALTER TABLE [Rules].[Rule]  WITH NOCHECK ADD  CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Entity] FOREIGN KEY([Rule_Entity_ID])
+---REFERENCES [Rules].[Rule_Entity] ([Rule_Entity_ID])
+---GO
+---
+---ALTER TABLE [Rules].[Rule] CHECK CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Entity]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+------3
+---ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Attribute_Group]
+---GO
+---
+---ALTER TABLE [Rules].[Rule]  WITH NOCHECK ADD  CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Attribute_Group] FOREIGN KEY([Rule_Attribute_Group_ID])
+---REFERENCES [Rules].[Rule_Attribute_Group] ([Rule_Attribute_Group_ID])
+---GO
+---
+---ALTER TABLE [Rules].[Rule] CHECK CONSTRAINT [FK_Rules_Rule_Rule_Entity_ID_Rules_Rule_Attribute_Group]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+------4
+---ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Unmap_Rules_Rule_Alias]
+---GO
+---
+---ALTER TABLE [Rules].[Rule]  WITH NOCHECK ADD  CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Unmap_Rules_Rule_Alias] FOREIGN KEY([Rule_Alias_ID_Unmap])
+---REFERENCES [Rules].[Rule_Alias] ([Rule_Alias_ID])
+---GO
+---
+---ALTER TABLE [Rules].[Rule] CHECK CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Unmap_Rules_Rule_Alias]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+------5
+---ALTER TABLE [Rules].[Rule] DROP CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Map_Rules_Rule_Alias]
+---GO
+---
+---ALTER TABLE [Rules].[Rule]  WITH NOCHECK ADD  CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Map_Rules_Rule_Alias] FOREIGN KEY([Rule_Alias_ID_Map])
+---REFERENCES [Rules].[Rule_Alias] ([Rule_Alias_ID])
+---GO
+---
+---ALTER TABLE [Rules].[Rule] CHECK CONSTRAINT [FK_Rules_Rule_Rule_Alias_ID_Map_Rules_Rule_Alias]
+---GO
+---
+---
+---
+---USE [EDW]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] DROP CONSTRAINT [FK_Map_Well_Header_Master_Hub_Well_Header_UID]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header]  WITH CHECK ADD  CONSTRAINT [FK_Map_Well_Header_Master_Hub_Well_Header_UID] FOREIGN KEY([Master_Hub_Well_Header_UID])
+---REFERENCES [Master].[Hub_Well_Header] ([Hub_Well_Header_UID])
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] CHECK CONSTRAINT [FK_Map_Well_Header_Master_Hub_Well_Header_UID]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] DROP CONSTRAINT [FK_Map_Well_Header_Merrick_Dim_Well_Header_UID_Dim_Well_Header]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header]  WITH CHECK ADD  CONSTRAINT [FK_Map_Well_Header_Merrick_Dim_Well_Header_UID_Dim_Well_Header] FOREIGN KEY([Merrick_Dim_Well_Header_UID])
+---REFERENCES [Merrick].[Dim_Well_Header] ([Merrick_Dim_Well_Header_UID])
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] CHECK CONSTRAINT [FK_Map_Well_Header_Merrick_Dim_Well_Header_UID_Dim_Well_Header]
+---GO
+---
+---
+---USE [EDW]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] DROP CONSTRAINT [FK_Map_Well_Header_WellView_Dim_Well_Header_UID_Dim_Well_Header]
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header]  WITH CHECK ADD  CONSTRAINT [FK_Map_Well_Header_WellView_Dim_Well_Header_UID_Dim_Well_Header] FOREIGN KEY([WellView_Dim_Well_Header_UID])
+---REFERENCES [WellView].[Dim_Well_Header] ([WellView_Dim_Well_Header_UID])
+---GO
+---
+---ALTER TABLE [Master_Etl].[Map_Well_Header] CHECK CONSTRAINT [FK_Map_Well_Header_WellView_Dim_Well_Header_UID_Dim_Well_Header]
+---GO
+---
